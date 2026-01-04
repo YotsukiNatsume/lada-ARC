@@ -50,4 +50,5 @@ def gpu_has_tensor_cores(device: torch.device = None) -> bool:
     if device.type == 'cuda':
         idx = device.index if device.index is not None else 0
         return has_modern_nvidia_gpu(idx)
+    
     return False
