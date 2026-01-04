@@ -145,7 +145,7 @@ def main():
         utils.dump_torch_devices()
         if hasattr(torch, 'xpu') and torch.xpu.is_available():
             for i in range(torch.xpu.device_count()):
-                print(f"{'xpu:'+str(i):<12}{torch.xpu.get_device_name(i)}")
+                print(f"\t{'xpu:'+str(i):<8}{torch.xpu.get_device_name(i)}")
         sys.exit(0)
     if args.list_encoding_presets:
         utils.dump_available_encoding_presets()
@@ -161,13 +161,13 @@ def main():
     if device_str == "auto":
         if hasattr(torch, 'xpu') and torch.xpu.is_available():
             device_str = "xpu"
-            print(f"Auto-selected XPU device: {torch.xpu.get_device_name(0)}")
+            print(f"Auto Device: {torch.xpu.get_device_name(0)}")
         elif torch.cuda.is_available():
             device_str = "cuda"
-            print(f"Auto-selected CUDA device: {torch.cuda.get_device_name(0)}")
+            print(f"Auto Device: {torch.cuda.get_device_name(0)}")
         else:
             device_str = "cpu"
-            print("Auto-selected CPU device")
+            print("Auto Device: CPU ")
 
     if device_str.startswith("cuda") and not torch.cuda.is_available():
         print(_("GPU {device} selected but CUDA is not available").format(device=device_str))
