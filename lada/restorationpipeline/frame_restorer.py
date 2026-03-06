@@ -238,6 +238,8 @@ class FrameRestorer:
         if has_processed_clips:
             if self.device.type == 'cuda':
                 torch.cuda.empty_cache()
+            elif self.device.type == 'xpu':
+                torch.xpu.empty_cache()
             elif self.device.type == 'mps':
                 torch.mps.empty_cache()
 
