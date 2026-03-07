@@ -26,15 +26,29 @@ def get_intel_xpu_runtime_libs(project_root):
     found_binaries = []
 
     patterns = [
-        "ur_win*.dll", "UR_LOADER.dll", "ur_adapter_level_zero.dll"
+        # Unified Runtime / Level Zero loader stack
+        "ur_*.dll",
+        "ze_*.dll",
+        # Intel oneAPI / PyTorch XPU runtime dependencies
+        "sycl*.dll",
+        "pi_*.dll",
+        "tbb*.dll",
+        "iomp*.dll",
+        "ittnotify*.dll",
+        "mkl_*.dll",
     ]
     
     if venv_root.exists():
         for p_file in venv_root.rglob("*.dll"):
             if any(fnmatch.fnmatch(p_file.name.lower(), pat.lower()) for pat in patterns):
-                found_binaries.append((str(p_file), "."))
-    
-    return found_binaries
+                found_binaries.append((str(p_file), "intel_runtime"))
+
+    # Avoid duplicate file names across different wheel directories
+    unique_binaries = {}
+    for src, dst in found_binaries:
+        unique_binaries[(pathlib.Path(src).name.lower(), dst)] = (src, dst)
+
+    return list(unique_binaries.values())
 
 def _update_env_var(env_var, paths, separator=";"):
     assert sys.platform == "win32", "_update_env_var() only works on Windows"
